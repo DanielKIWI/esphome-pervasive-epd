@@ -22,9 +22,9 @@ void Pervasive_EPD::setup() {
   this->reset_();
   // Below causes spi to no longer work afterwards
   this->spi_teardown();
-  ESP_LOGI(TAG, "initialize");
+  // ESP_LOGI(TAG, "initialize");
   this->initialize();
-  ESP_LOGI(TAG, "COG_data: 0x%02x, 0x%02x", COG_data[0], COG_data[1]);  // COG_data: 0x0f, 0x0e
+  // ESP_LOGI(TAG, "COG_data: 0x%02x, 0x%02x", COG_data[0], COG_data[1]);  // COG_data: 0x0f, 0x0e
   //   ESP_LOGI(TAG, "pinMode MOSI back from spi3");
   //   pinMode(MOSI, OUTPUT);
   // End
@@ -33,15 +33,15 @@ void Pervasive_EPD::setup() {
   // spiAttachMOSI(_spi, MOSI);
   // spiAttachMISO(_spi, MISO);
 
-  ESP_LOGI(TAG, "spi setup");
+  // ESP_LOGI(TAG, "spi setup");
   this->spi_setup();
 
-  ESP_LOGI(TAG, "pins: cs: %i %i, dc: %i %i, reset: %i %i, busy: %i %i", ((InternalGPIOPin *) this->cs_)->get_pin(),
-           ((InternalGPIOPin *) this->cs_)->is_inverted(), ((InternalGPIOPin *) this->dc_pin_)->get_pin(),
-           ((InternalGPIOPin *) this->dc_pin_)->is_inverted(), ((InternalGPIOPin *) this->reset_pin_)->get_pin(),
-           ((InternalGPIOPin *) this->reset_pin_)->is_inverted(), ((InternalGPIOPin *) this->busy_pin_)->get_pin(),
-           ((InternalGPIOPin *) this->busy_pin_)->is_inverted());
-  ESP_LOGI(TAG, "setup done. Screen size: %i x %i", get_width(), get_height());
+  // ESP_LOGI(TAG, "pins: cs: %i %i, dc: %i %i, reset: %i %i, busy: %i %i", ((InternalGPIOPin *) this->cs_)->get_pin(),
+  //          ((InternalGPIOPin *) this->cs_)->is_inverted(), ((InternalGPIOPin *) this->dc_pin_)->get_pin(),
+  //          ((InternalGPIOPin *) this->dc_pin_)->is_inverted(), ((InternalGPIOPin *) this->reset_pin_)->get_pin(),
+  //          ((InternalGPIOPin *) this->reset_pin_)->is_inverted(), ((InternalGPIOPin *) this->busy_pin_)->get_pin(),
+  //          ((InternalGPIOPin *) this->busy_pin_)->is_inverted());
+  // ESP_LOGI(TAG, "setup done. Screen size: %i x %i", get_width(), get_height());
 }
 void Pervasive_EPD::setup_pins_() {
   this->dc_pin_->setup();  // OUTPUT
@@ -71,13 +71,13 @@ void Pervasive_EPD::end_command_start_data_() { this->dc_pin_->digital_write(tru
 void Pervasive_EPD::end_data_() { this->disable(); }
 
 void Pervasive_EPD::command(uint8_t value) {
-  ESP_LOGI(TAG, "command 0x%02x", value);
+  // ESP_LOGI(TAG, "command 0x%02x", value);
   this->start_command_();
   this->write_byte(value);
   this->end_command_();
 }
 void Pervasive_EPD::cmd_data(uint8_t cmd, uint8_t data) {
-  ESP_LOGI(TAG, "cmd_data 0x%02x - 0x%02x", cmd, data);
+  // ESP_LOGI(TAG, "cmd_data 0x%02x - 0x%02x", cmd, data);
   this->start_command_();
   this->write_byte(cmd);
   this->end_command_start_data_();
@@ -85,9 +85,9 @@ void Pervasive_EPD::cmd_data(uint8_t cmd, uint8_t data) {
   this->end_data_();
 }
 void Pervasive_EPD::cmd_data(uint8_t cmd, const uint8_t *data, size_t size) {
-  ESP_LOGI(TAG, "cmd_data 0x%02x - [%i]", cmd, size);
-  if (size == 2)
-    ESP_LOGI(TAG, "[0x%02x, 0x%02x]", data[0], data[1]);
+  // ESP_LOGI(TAG, "cmd_data 0x%02x - [%i]", cmd, size);
+  // if (size == 2)
+  //   ESP_LOGI(TAG, "[0x%02x, 0x%02x]", data[0], data[1]);
 
   this->start_command_();
   delayMicroseconds(b_delayCS);
@@ -106,7 +106,7 @@ void Pervasive_EPD::cmd_data(uint8_t cmd, const uint8_t *data, size_t size) {
   delayMicroseconds(b_delayCS);
 }
 void Pervasive_EPD::cmd_data_fixed(uint8_t cmd, uint8_t data, size_t size) {
-  ESP_LOGI(TAG, "cmd_data_fixed 0x%02x - 0x%02x [%i]", cmd, data, size);
+  // ESP_LOGI(TAG, "cmd_data_fixed 0x%02x - 0x%02x [%i]", cmd, data, size);
   this->start_command_();
   delayMicroseconds(b_delayCS);
   this->write_byte(cmd);
@@ -173,7 +173,7 @@ void Pervasive_EPD::writeSPI3(uint8_t value) {
 // }
 bool Pervasive_EPD::busy_wait(bool state) {
   if (this->busy_pin_ == nullptr) {
-    ESP_LOGI(TAG, "busy_pin is null");
+    // ESP_LOGI(TAG, "busy_pin is null");
     return true;
   }
   if (this->busy_pin_->digital_read() == state) {
@@ -181,7 +181,7 @@ bool Pervasive_EPD::busy_wait(bool state) {
     return true;
   }
 
-  ESP_LOGI(TAG, "busy_wait");
+  // ESP_LOGI(TAG, "busy_wait");
   const uint32_t start = millis();
 
   while (this->busy_pin_->digital_read() != state)  // || millis() - start < 100)
@@ -192,7 +192,7 @@ bool Pervasive_EPD::busy_wait(bool state) {
     }
     delay(1);
   }
-  ESP_LOGI(TAG, "busy_wait %i took %i", state, (millis() - start));
+  // ESP_LOGI(TAG, "busy_wait %i took %i", state, (millis() - start));
 
   return true;
 }
@@ -205,7 +205,7 @@ void Pervasive_EPD::update() {
     App.safe_reboot();
     return;
   }
-  ESP_LOGI(TAG, "update");
+  // ESP_LOGI(TAG, "update");
   this->do_update_();
   if (is_busy())
     return;
@@ -338,6 +338,7 @@ void Pervasive_EPD::initialize() {
   } else {
     get_COG_data();
     this->pref_->save(COG_data);
+
     ESP_LOGI(TAG, "Read COG_data from display: 0x%02x, 0x%02x", COG_data[0], COG_data[1]);
     ESP_LOGE(TAG, "Restart Required");
     needsRestart = true;
@@ -555,7 +556,7 @@ void HOT Pervasive_EPD::display() {
   bool full_update = this->at_update_ == 0;
   bool prev_full_update = this->at_update_ == 1;
 
-  ESP_LOGI(TAG, "update full: %i", full_update);
+  // ESP_LOGI(TAG, "update full: %i", full_update);
   // b_resume(); // GPIO
   reset_();
 
@@ -591,7 +592,7 @@ void HOT Pervasive_EPD::display() {
       uint8_t indexTemperature;  // Temperature
       uint8_t index00_work[2];   // PSR
 
-      ESP_LOGI(TAG, "u_temperature %i - 0x%02x", u_temperature, u_temperature);
+      // ESP_LOGI(TAG, "u_temperature %i - 0x%02x", u_temperature, u_temperature);
       // FILM_K already checked
       if (!full_update)  // Specific settings for fast update
       {
