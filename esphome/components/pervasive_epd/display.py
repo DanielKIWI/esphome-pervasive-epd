@@ -6,7 +6,6 @@ from esphome.components import display, spi
 import esphome.config_validation as cv
 from esphome.const import (
     CONF_BUSY_PIN,
-    CONF_CS_PIN,
     CONF_DC_PIN,
     CONF_FULL_UPDATE_EVERY,
     CONF_ID,
@@ -108,10 +107,6 @@ async def to_code(config):
     await display.register_display(var, config)
     await spi.register_spi_device(var, config)
 
-    _LOGGER.info("DC: %s", config[CONF_DC_PIN])
-    _LOGGER.info("CS: %s", config[CONF_CS_PIN])
-    # _LOGGER.info("CLK: %s", config[CONF_CLK_PIN])
-    # _LOGGER.info("MOSI: %s", config[CONF_MOSI_PIN])
     dc = await cg.gpio_pin_expression(config[CONF_DC_PIN])
     cg.add(var.set_dc_pin(dc))
     saver = SaverTemplate.new()
