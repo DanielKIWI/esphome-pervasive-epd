@@ -60,12 +60,12 @@ float Pervasive_EPD::get_setup_priority() const { return setup_priority::PROCESS
 
 void Pervasive_EPD::start_command_() {
   this->dc_pin_->digital_write(false);
-  this->enable();
+  this->enable();  // this->cs_pin_->digital_write(false);
 }
 void Pervasive_EPD::end_command_() { this->disable(); }
 void Pervasive_EPD::start_data_() {
   this->dc_pin_->digital_write(true);
-  this->enable();
+  this->enable();  // this->cs_pin_->digital_write(false);
 }
 void Pervasive_EPD::end_command_start_data_() { this->dc_pin_->digital_write(true); }
 void Pervasive_EPD::end_data_() { this->disable(); }
@@ -199,12 +199,6 @@ bool Pervasive_EPD::busy_wait(bool state) {
 
 void Pervasive_EPD::update() {
   frameCount++;
-  if (needsRestart && frameCount > 4) {
-    ESP_LOGI(TAG, "mandatory restart...");
-    delay(100);
-    App.safe_reboot();
-    return;
-  }
   // ESP_LOGI(TAG, "update");
   this->do_update_();
   if (is_busy())
@@ -341,7 +335,9 @@ void Pervasive_EPD::initialize() {
 
     ESP_LOGI(TAG, "Read COG_data from display: 0x%02x, 0x%02x", COG_data[0], COG_data[1]);
     ESP_LOGE(TAG, "Restart Required");
-    needsRestart = true;
+    global_preferences->sync();
+    delay(100);
+    App.safe_reboot();
     // delay(500);
     // exit(0x02);
   }
