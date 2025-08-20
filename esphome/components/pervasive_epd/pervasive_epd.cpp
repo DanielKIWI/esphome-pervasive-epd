@@ -221,7 +221,17 @@ void HOT Pervasive_EPD::draw_absolute_pixel_internal(int x, int y, Color color) 
 
   uint8_t b = this->buffer_[addr];
   uint8_t p = b;
-  if (!color.is_on()) {
+  bool on;
+  if (useThreshold) {
+    on = color.white > threshold;
+  } else {
+    on = color.is_on();
+  }
+
+  if (inverted)
+    on = !on;
+
+  if (!on) {
     b |= (1 << (7 - y % 8));
   } else {
     b &= ~(1 << (7 - y % 8));

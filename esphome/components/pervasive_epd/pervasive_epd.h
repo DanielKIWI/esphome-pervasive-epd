@@ -116,6 +116,13 @@ class Pervasive_EPD : public display::DisplayBuffer,
 
   display::DisplayType get_display_type() override { return display::DisplayType::DISPLAY_TYPE_BINARY; }
 
+  void set_inverted(bool v) { inverted = v; }
+  bool inverted = false;
+  void set_use_threshold(bool v) { useThreshold = v; }
+  bool useThreshold = false;
+  void set_threshold(int v) { threshold = v; }
+  int threshold = 128;
+
  protected:
   bool busy_wait(bool state = true);
 
@@ -174,9 +181,7 @@ class Pervasive_EPD : public display::DisplayBuffer,
   int8_t u_temperature = 0;  // = 25;
   uint8_t COG_data[2];       // OTP
   bool s_flag50;             // Register 0x50
-  bool needsRestart = false;
   ulong frameCount = 0UL;
-  bool isFirstFrame = true;
   bool isWaiting = false;
   bool changed = true;
   uint16_t b_delayCS = 50;  // ms

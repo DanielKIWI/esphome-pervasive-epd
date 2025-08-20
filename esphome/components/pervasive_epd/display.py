@@ -9,12 +9,16 @@ from esphome.const import (
     CONF_DC_PIN,
     CONF_FULL_UPDATE_EVERY,
     CONF_ID,
+    CONF_INVERT,
     CONF_LAMBDA,
     CONF_MODEL,
     CONF_PAGES,
     CONF_RESET_DURATION,
     CONF_RESET_PIN,
+    CONF_THRESHOLD,
 )
+
+CONF_USE_THRESHOLD = "use_threshold"
 
 DEPENDENCIES = ["spi"]
 
@@ -81,6 +85,9 @@ CONFIG_SCHEMA = cv.All(
             cv.Optional(CONF_RESET_PIN): pins.gpio_output_pin_schema,
             cv.Optional(CONF_BUSY_PIN): pins.gpio_input_pin_schema,
             cv.Optional(CONF_FULL_UPDATE_EVERY): cv.int_range(min=1, max=4294967295),
+            cv.Optional(CONF_INVERT): cv.boolean,
+            cv.Optional(CONF_USE_THRESHOLD): cv.boolean,
+            cv.Optional(CONF_THRESHOLD): cv.int_range(min=1, max=255),
             cv.Optional(CONF_RESET_DURATION): cv.All(
                 cv.positive_time_period_milliseconds,
                 cv.Range(max=core.TimePeriod(milliseconds=500)),
@@ -127,3 +134,10 @@ async def to_code(config):
         cg.add(var.set_full_update_every(config[CONF_FULL_UPDATE_EVERY]))
     if CONF_RESET_DURATION in config:
         cg.add(var.set_reset_duration(config[CONF_RESET_DURATION]))
+
+    if CONF_INVERT in config:
+        cg.add(var.set_inverted(config[CONF_INVERT]))
+    if CONF_USE_THRESHOLD in config:
+        cg.add(var.set_use_threshold(config[CONF_USE_THRESHOLD]))
+    if CONF_THRESHOLD in config:
+        cg.add(var.set_threshold(config[CONF_THRESHOLD]))
